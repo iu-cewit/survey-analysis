@@ -1,7 +1,8 @@
 # Adapted from https://github.com/iu-cewit/python_guides
 # Uses requests library: http://docs.python-requests.org/en/latest/
 import requests
-import json #this wasn't included in original fork
+import json
+import csv
 
 # SM Host
 HOST = "https://api.surveymonkey.net"
@@ -68,7 +69,7 @@ class ApiService(object):
         # we need a function to divide up the respondent id list into
         # chunks of a maximum of 10 respondents
         def respondent_chunks(r_ids, max_count=10):
-            for i in xrange(0, len(r_ids), max_count):
+            for i in range(0, len(r_ids), max_count):
                 yield r_ids[i: i + max_count]
 
                 # make sure respondent_ids is a key in data
@@ -119,6 +120,26 @@ class ApiService(object):
                 # We have finished getting all surveys
                 break
         return {"status": 0, "data": survey_list}
+
+    def save_survey_list(self, field_list=[]):
+        """Creates csv file. Field list: title, date_created, date_modified,
+        language_id, question_count, num_responses, analysis_url, preview_url
+
+        list of str -> none"""
+        filename = request_filename('csv')
+        with open(filename, 'w', encoding = 'utf-8') as csvfile:
+            #csv file setup
+            fieldnames = ['survey_id']
+            for field in field_list:
+                fieldnames.append(field)
+            writer = csv.DictWriter(csvfile, fieldnames)
+            writer.writeheader()
+            #api request
+            data = {'fields': field_list}
+            survey_list = self.get_survey_list(data)
+            for survey in survey_list['data']:
+                writer.writerow(survey)
+                print("Survey added to file: " + survey['survey_id'])
 
     # v2.get_collector_list
     def get_collector_list(self, data=None):
@@ -175,3 +196,22 @@ class ApiService(object):
         if "x-mashery-error-code" in response.headers:
             return None
         return response.json()
+
+##################################
+######## Helper Functions ########
+##################################
+
+def credentials(filename):
+    """Returns a dict with api key (line 1) and access token (line 2).
+
+    str -> dict"""
+    with open(filename, 'r') as file:
+        return {'key': file.readline().strip(), \
+                'token': file.readline().strip()}
+
+def request_filename(extension):
+    """Requests user input for filename with given extension.
+
+    str -> str"""
+    return input("Enter the filename to be created with format " + \
+                 "<name." + str(extension) + ">: ")
