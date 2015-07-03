@@ -83,7 +83,7 @@ def get_respondent_ids(survey_id, auth_filename):
 # {question_id: {'text': question_text, 'answer': {answer_id: answer_value}}}
 
 def recode_question(question_dict, question_id, new_text):
-    """Modifies the answer value in a question dictionary
+    """Modifies the question text in a question dictionary
 
     dict, str, str -> none"""
     question_dict[question_id]["text"] = new_text
