@@ -29,9 +29,9 @@ class ApiService(object):
             "api_key": api_key
         }
 
-    ############################################
-    ######### SurveyMonkey API Methods #########
-    ############################################
+    # ########################################## #
+    # ######## SurveyMonkey API Methods ######## #
+    # ########################################## #
 
     # v2.get_respondent_list
     def get_respondent_list(self, data=None):
@@ -67,8 +67,8 @@ class ApiService(object):
         uri = HOST + "/v2/surveys/get_responses"
 
         # we need a function to divide up the respondent id list into
-        # chunks of a maximum of 10 respondents
-        def respondent_chunks(r_ids, max_count=10):
+        # chunks of a maximum of 100 respondents
+        def respondent_chunks(r_ids, max_count=100):
             for i in range(0, len(r_ids), max_count):
                 yield r_ids[i: i + max_count]
 
@@ -121,20 +121,21 @@ class ApiService(object):
                 break
         return {"status": 0, "data": survey_list}
 
-    def save_survey_list(self, field_list=[]):
+    def save_survey_list(self, field_list=None, filename='survey_list.csv'):
         """Creates csv file. Field list: title, date_created, date_modified,
         language_id, question_count, num_responses, analysis_url, preview_url
 
         list of str -> none"""
-        filename = request_filename('csv')
-        with open(filename, 'w', encoding = 'utf-8') as csvfile:
-            #csv file setup
+        if not field_list:
+            field_list = []
+        with open(filename, 'w', encoding='utf-8') as csvfile:
+            # csv file setup
             fieldnames = ['survey_id']
             for field in field_list:
                 fieldnames.append(field)
             writer = csv.DictWriter(csvfile, fieldnames)
             writer.writeheader()
-            #api request
+            # api request
             data = {'fields': field_list}
             survey_list = self.get_survey_list(data)
             for survey in survey_list['data']:
@@ -173,9 +174,9 @@ class ApiService(object):
         uri = HOST + "/v2/surveys/get_response_counts"
         return self._make_post_request(uri, data)
 
-    #############################################
-    ######## API Service Private Methods ########
-    #############################################
+    # ########################################### #
+    # ####### API Service Private Methods ####### #
+    # ########################################### #
 
     # This will try up to MASHERY_REQUEST_COUNT times to get a valid response
     # from Mashery
@@ -185,10 +186,8 @@ class ApiService(object):
             response = self._post_request(uri, data)
             if response is not None:
                 return response
-        return {
-            "status": 1,
-            "errmsg": "Did not receive a valid response from Mashery"
-        }
+        return {"status": 1,
+                "errmsg": "Did not receive a valid response from Mashery"}
 
     def _post_request(self, uri, data=None):
         data = data if data is not None else {}
@@ -197,21 +196,15 @@ class ApiService(object):
             return None
         return response.json()
 
-##################################
-######## Helper Functions ########
-##################################
+# ################################ #
+# ####### Helper Functions ####### #
+# ################################ #
+
 
 def credentials(filename):
     """Returns a dict with api key (line 1) and access token (line 2).
 
     str -> dict"""
     with open(filename, 'r') as file:
-        return {'key': file.readline().strip(), \
+        return {'key': file.readline().strip(),
                 'token': file.readline().strip()}
-
-def request_filename(extension):
-    """Requests user input for filename with given extension.
-
-    str -> str"""
-    return input("Enter the filename to be created with format " + \
-                 "<name." + str(extension) + ">: ")
