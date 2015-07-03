@@ -92,7 +92,7 @@ def recode_question(question_dict, question_id, new_text):
 def recode_answer(question_dict, question_id, answer_id, new_value):
     """Modifies the answer value in a question dictionary
 
-    dict, str, str -> none"""
+    dict, str, str, obj -> none"""
     question_dict[question_id]['answer'][answer_id] = new_value
 
 
