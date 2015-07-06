@@ -4,17 +4,37 @@ from survey_monkey_api import *
 
 
 def main():
-    # get questions from survey monkey api
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'
-    survey_id = '48173850'
-    questions = get_questions(survey_id, local_file)
-    print(questions)
+    survey_id = '46772574'
+    question_ids = ['592547959', '592548553', '592549927', '594645333',
+                    '594645445', '594651002']
+
+    # get dictionary of survey questions
+    # questions = get_questions(survey_id, local_file)
 
     # modify question dictionary (for later use in dataframe)
-    recode_question(questions, '608743994', 'can_attend')
-    recode_answer(questions, '608743994', '7054599535', 1)
-    recode_answer(questions, '608743994', '7054599536', 0)
-    print('\n', questions)
+    # recode_question(questions, '608743994', 'can_attend')
+    # recode_answer(questions, '608743994', '7054599535', 1)
+    # recode_answer(questions, '608743994', '7054599536', 0)
+    # print(json.dumps(questions, sort_keys=True, indent=2))
+
+    # save question dictionary to a file
+    # with open('questions.txt', 'w') as file:
+    #     file.write(json.dumps(questions, sort_keys=True, indent=2))
+
+    # get list of respondents
+    respondent_ids = get_respondent_ids(survey_id, local_file)
+    test_respondents = respondent_ids[:10]
+    # print(test_respondents)
+    responses = get_survey_data(survey_id, local_file, test_respondents)
+
+    background = {}
+    for respondent in responses["data"]:
+        temp = [q for q in respondent["questions"] if q.get("question_id")
+                in question_ids]
+        background[respondent.get("respondent_id")] = temp
+    with open('background.txt', 'w') as file:
+        file.write(str(background))
 
 
 def get_structure(json_object, nest=0):
@@ -77,6 +97,17 @@ def get_respondent_ids(survey_id, auth_filename):
     data = {"survey_id": survey_id}
     respondents = api.get_respondent_list(data)
     return [r.get("respondent_id") for r in respondents["data"]]
+
+
+def get_survey_data(survey_id, auth_filename, respondent_ids):
+    """Returns a dictionary of responses
+
+    str, str, list -> dict"""
+    auth = credentials(auth_filename)
+    api = ApiService(auth['key'], auth['token'])
+    data = {"survey_id": survey_id, "respondent_ids": respondent_ids}
+    responses = api.get_responses(data)
+    return responses
 
 
 # The question_dict returned by get_questions() has the format:
