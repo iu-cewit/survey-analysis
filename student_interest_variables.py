@@ -8,14 +8,13 @@ def main():
     # Create the variables
     first_name = Variable('first name', '592547791')
     last_name = Variable('last name', '592547959')
-    # level of study variable isn't working
     level_ref = {
       "6915931739": "Other",
       "6915931746": "Freshman",
       "6915931749": "Sophomore",
       "6915931752": "Junior",
       "6915931755": "Senior",
-      "6915931757": "Super",
+      "6915931757": "Senior",
       "6915931760": "Master",
       "6915931763": "JD",
       "6915931766": "PhD",
@@ -23,7 +22,6 @@ def main():
       "6915931770": "OD"
     }
     level = Variable('level of study', '592548553', None, level_ref)
-    # mailing variable not working, always returns None
     mailing_ref = {"6926768925": "Yes", "6926768926": "No"}
     mailing = Variable('opt-in mailing list','592549927', ref=mailing_ref)
     majors = Variable('majors', '594645333')
@@ -73,11 +71,13 @@ def main():
                              '594651002', '6926587207', interest_ref)
     web_dev = Variable('interested in web design',
                              '594651002', '6926587209', interest_ref)
-    # mentoring variables not working
-    peer_mentor = Variable('needs peer mentor', '594654487', '6926590125')
-    staff_mentor = Variable('needs staff mentor', '594654487', '6926590126')
-    fac_mentor = Variable('needs faculty mentor', '594654487', '6926590127')
-    be_mentor = Variable('can serve as mentor','594654487', '6926590128')
+    mentor_ref = {
+      "6926590125": "peer",
+      "6926590126": "staff",
+      "6926590127": "faculty",
+      "6926590128": "serve"
+    }
+    mentor = Variable('mentoring needs','594654487', None, mentor_ref)
     agree_ref = {
       "6926745140": 2,
       "6926745141": 1,
@@ -93,14 +93,14 @@ def main():
                humanities, social_justice, social_good, social_media,
                game_dev, gaming, interaction, mobile_app, web_dev,
                phys_computing, project_mgmt, research, security,
-               education, higher_ed, peer_mentor, staff_mentor,
-               fac_mentor, be_mentor, it_career]
+               education, higher_ed, mentor, it_career]
 
     # Create subset of questions corresponding to variables
     question_ids = []
     for var in varlist:
         if var.q not in question_ids:
             question_ids.append(var.q)
+    #print(question_ids)
 
     # Access student interest survey via api
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'

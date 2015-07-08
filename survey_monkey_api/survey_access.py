@@ -6,8 +6,9 @@ from survey_monkey_api import *
 def main():
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'
     survey_id = '46772574'
-    question_ids = ['592547959', '592548553', '592549927', '594645333',
-                    '594645445', '594651002']
+    question_ids = ['592547791', '592547959', '592548553', '592549927',
+                    '594645333', '594645445', '594646446', '594651002',
+                    '594654487', '597351774']
 
     # get dictionary of survey questions
     # questions = get_questions(survey_id, local_file)
@@ -24,17 +25,20 @@ def main():
 
     # get list of respondents
     respondent_ids = get_respondent_ids(survey_id, local_file)
-    test_respondents = respondent_ids[:10]
-    # print(test_respondents)
+    test_respondents = respondent_ids[:50]
+
+    # get responses for list of respondents
     responses = get_survey_data(survey_id, local_file, test_respondents)
 
-    background = {}
+    # save responses for a subset of survey questions
+    res_data = {}
     for respondent in responses["data"]:
         temp = [q for q in respondent["questions"] if q.get("question_id")
                 in question_ids]
-        background[respondent.get("respondent_id")] = temp
-    with open('background.txt', 'w') as file:
-        file.write(str(background))
+        res_data[respondent.get("respondent_id")] = temp
+    with open('responses.txt', 'w') as file:
+        file.write(str(res_data))
+    #return res_data
 
 
 def get_structure(json_object, nest=0):

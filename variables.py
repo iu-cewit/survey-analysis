@@ -29,6 +29,9 @@ class Variable:
             if q.get("question_id") == self.q:
                 if self.ref is None:
                     result = [a.get("text") for a in q.get("answers")]
+                elif self.a is None:
+                    row = [a.get("row") for a in q.get("answers")]
+                    result = [self.ref[k] for k in row]
                 else:
                     grid = [a.get("col") for a in q.get("answers") if
                             a.get("row") == self.a]
