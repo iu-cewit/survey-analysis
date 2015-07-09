@@ -21,7 +21,7 @@ class Variable:
                self.a + ', ' + str(self.ref) + ')'
 
     def get_value(self, responses):
-        """Returns the value for a question-answer combination
+        """Returns a respondent's answer for a question-answer combination
 
         Variable, list of dicts (questions) -> list"""
         result = []
@@ -37,4 +37,28 @@ class Variable:
                             a.get("row") == self.a]
                     result = [self.ref[col] for col in grid]
         return result
-        # need to fix cases where respondent didn't answer
+
+    def make_value(self, responses, new_value=None):
+        """Modifies a respondent's answer for a question-answer combination
+
+        Variable, list of dicts (questions), value (str or num) -> none"""
+        if new_value is None:
+            new_value = []
+        new_q = {"question_id": self.q}
+        if self.a is None and self.ref is None:
+            new_q["answers"] = [{"row": "0", "text": new_value}]
+        elif self.a is not None and self.ref is None:
+            new_q["answers"] = [{"row": self.a, "text": new_value}]
+        elif self.a is None and self.ref is not None:
+            new_q["answers"] = [{"row": new_value}]
+        else:
+            new_q["answers"] = [{"row": self.a, "col": new_value}]
+
+        questions = [q.get("question_id") for q in responses]
+        if self.q in questions:
+            for q in responses:
+                if q.get("question_id") == self.q:
+                    responses.remove(q)
+        responses.append(new_q)
+
+
