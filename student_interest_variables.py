@@ -2,8 +2,8 @@
 
 from survey_access import *
 from variables import *
+from matching import *
 import csv
-import re
 
 
 def main():
@@ -143,7 +143,7 @@ def main():
     respondent_ids = get_respondent_ids(survey_id, local_file)
 
     # Get responses for a subset of respondents (to limit calls/second)
-    test_respondents = respondent_ids[:10]
+    test_respondents = respondent_ids[:50]
     responses = get_survey_data(survey_id, local_file, test_respondents)
     res_data = {}
     for respondent in responses["data"]:
@@ -160,15 +160,27 @@ def main():
 
     res_ids = [r for r in res_data.keys()]
     print('Respondent IDs:', res_ids, '\n')
+    field_matches = {'Exact': 0, 'Close': 0, 'None': 0}
+    iu_major_matches = {'Exact': 0, 'Close': 0, 'None': 0}
     for r in res_ids:
         print(first_name.get_value(res_data[r])[0],
               last_name.get_value(res_data[r])[0])
+
         res_field = find_match(res_data[r], major1, field_list)
-        field.make_value(res_data[r], res_field)
+        field_matches[res_field[1]] += 1
         res_iu_major = find_match(res_data[r], major1, iu_major_list)
-        category.make_value(res_data[r], fields.get(res_field))
-        school.make_value(res_data[r], schools.get(res_iu_major))
-        print(res_data[r])
+        iu_major_matches[res_iu_major[1]] += 1
+
+        field.make_value(res_data[r], res_field[0])
+        category.make_value(res_data[r], fields.get(res_field[0]))
+        school.make_value(res_data[r], schools.get(res_iu_major[0]))
+    print('Field Matches:')
+    for item in field_matches.items():
+        print(item)
+    print('IU Major Matches:')
+    for item in iu_major_matches.items():
+        print(item)
+
     # res1 = data['3022130005']
     # print_respondent(res1, [last_name, level, minors, security])
     # need major variable, field list, respondent_ids
@@ -181,38 +193,6 @@ def print_respondent(respondent, variable_list):
     print('respondent_id:', respondent)
     for var in variable_list:
         print(var.desc, ':', str(var.get_value(respondent)))
-
-
-def find_match(respondent, variable, match_list):
-    """Returns the closest match from a list of possible matches
-
-    list of dicts (questions), Variable, list of str -> str"""
-    res_value = variable.get_value(respondent)[0]
-    print('Value entered:', str(res_value))
-    match_type = 'No'
-    if res_value.lower() in match_list:
-        res_fields = [res_value.lower()]
-        match_type = 'Exact'
-    else:
-        res_fields = [m.group(0) for f in match_list for m in
-                      [re.search(r'.*(%s).*' % res_value.lower(), f)] if m]
-    if len(res_fields) != 1:
-        field_matches = {}
-        for f in match_list:
-            i = 0
-            for w in [w.lower() for w in res_value.split() if w != 'and']:
-                if w in f:
-                    i += 1
-                    field_matches[f] = i
-        try:
-            res_fields = max(field_matches, key=field_matches.get)
-            match_type = 'Close'
-        except ValueError:
-            res_fields = 'No Match Found'
-    else:
-        res_fields = res_fields[0]
-    print(match_type + ' match: ', res_fields)
-    return res_fields
 
 
 if __name__ == '__main__':
