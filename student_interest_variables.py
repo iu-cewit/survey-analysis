@@ -7,7 +7,7 @@ import csv
 
 
 def main():
-    # Generate variables from survey monkey questions
+    # 1: Generate variables from survey monkey questions
     first_name = Variable('first name', '592547791')
     last_name = Variable('last name', '592547959')
     level_ref = {
@@ -94,7 +94,7 @@ def main():
     it_career = Variable('interested in tech career', '597351774',
                          '6926745145', agree_ref)
 
-    # Create new variables
+    # 2: Create and populate new variables
     field = Variable('primary major or discipline', 'field_name')
     category = Variable('major or discipline category', 'field_category')
     school = Variable('degree granting unit', 'major_school')
@@ -118,23 +118,25 @@ def main():
         for row in contents:
             schools[row['Major'].lower()] = row['School']
 
-    # match respondent input to major, category, and school
-    field_list = [f.lower() for f in fields]
+    # lists to use in the matching process
+    field_list = [field.lower() for field in fields]
     iu_major_list = [m.lower() for m in schools]
 
-    # Working with all variables
-    varlist = [first_name, last_name, level, mailing, field, major1, major2,
-               major3, minor1, minor2, minor3, email, data_analysis, category,
+    # match respondent input to major, category, and school
+
+    # The variables I want to get data for
+    varlist = [first_name, last_name, email, mailing, level, field, school,
+               category, it_career, major1, minor1, email, data_analysis,
                blogging, programming, graphics, humanities, social_justice,
                social_good, social_media, game_dev, gaming, interaction,
                mobile_app, web_dev, phys_computing, project_mgmt, research,
-               security, education, higher_ed, mentor, it_career, school]
+               security, education, higher_ed, mentor]
 
     # Create subset of questions corresponding to variables
     question_ids = []
     for var in varlist:
-        if var.q not in question_ids:
-            question_ids.append(var.q)
+        if var.question not in question_ids:
+            question_ids.append(var.question)
     # print(question_ids)
 
     # Access student interest survey via api
@@ -142,48 +144,58 @@ def main():
     survey_id = '46772574'
     respondent_ids = get_respondent_ids(survey_id, local_file)
 
-    # Get responses for a subset of respondents (to limit calls/second)
+    # Get responses for a subset of respondents (to limit calls/second) and
+    # the subset of questions in question_ids
     test_respondents = respondent_ids[:50]
     responses = get_survey_data(survey_id, local_file, test_respondents)
     res_data = {}
     for respondent in responses["data"]:
-        temp = [q for q in respondent["questions"] if q.get("question_id")
-                in question_ids]
+        temp = [question for question in respondent["questions"] if
+                question.get("question_id") in question_ids]
         res_data[respondent.get("respondent_id")] = temp
-    # return res_data
 
-    # For working offline only
-    # with open('responses.txt', 'r') as file:
-    #     contents = file.readlines()
-    #     res_data = eval(contents[0])
-    # return res_data
-
-    res_ids = [r for r in res_data.keys()]
+    res_ids = [respondent for respondent in res_data.keys()]
     print('Respondent IDs:', res_ids, '\n')
+
     field_matches = {'Exact': 0, 'Close': 0, 'None': 0}
     iu_major_matches = {'Exact': 0, 'Close': 0, 'None': 0}
-    for r in res_ids:
-        print(first_name.get_value(res_data[r])[0],
-              last_name.get_value(res_data[r])[0])
 
+    # Populate values for new variables
+    for r in res_ids:
+        # find closest matching field and use to populate field and category
+        # variables
         res_field = find_match(res_data[r], major1, field_list)
         field_matches[res_field[1]] += 1
-        res_iu_major = find_match(res_data[r], major1, iu_major_list)
-        iu_major_matches[res_iu_major[1]] += 1
-
         field.make_value(res_data[r], res_field[0])
         category.make_value(res_data[r], fields.get(res_field[0]))
+
+        # find closest matching major and use to populate school variable
+        res_iu_major = find_match(res_data[r], major1, iu_major_list)
+        iu_major_matches[res_iu_major[1]] += 1
         school.make_value(res_data[r], schools.get(res_iu_major[0]))
+
+    # Create matrix of all variable values
+    row = 0
+    matrix = []
+    for respondent in res_ids:
+        row_data = [respondent]
+        for variable in varlist:
+            value = variable.get_value(res_data[respondent])
+            if len(value) != 0:
+                row_data.append(value[0])
+            else:
+                row_data.append(value)
+        matrix.append(row_data)
+        row += 1
+
     print('Field Matches:')
     for item in field_matches.items():
         print(item)
     print('IU Major Matches:')
     for item in iu_major_matches.items():
         print(item)
-
-    # res1 = data['3022130005']
-    # print_respondent(res1, [last_name, level, minors, security])
-    # need major variable, field list, respondent_ids
+    print('Rows added: ', str(row))
+    return matrix
 
 
 def print_respondent(respondent, variable_list):

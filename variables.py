@@ -8,33 +8,36 @@ class Variable:
     def __init__(self, description, question_id, answer_id=None, ref=None):
         """name (str), question_id from survey monkey (str), answer_id  from
         survey monkey (str), ref has format {answer_choice: value} (dict)"""
-        self.desc = description
-        self.q = question_id
-        self.a = answer_id
+        self.description = description
+        self.question = question_id
+        self.answer = answer_id
         self.ref = ref
 
     def __str__(self):
-        return self.desc
+        return self.description
 
     def __repr__(self):
-        return 'Variable(' + self.desc + ', ' + self.q + ', ' + \
-               self.a + ', ' + str(self.ref) + ')'
+        return 'Variable(' + self.description + ', ' + self.question + ', ' + \
+               self.answer + ', ' + str(self.ref) + ')'
 
     def get_value(self, responses):
         """Returns a respondent's answer for a question-answer combination
 
         Variable, list of dicts (questions) -> list"""
         result = []
-        for q in responses:
-            if q.get("question_id") == self.q:
+        for question in responses:
+            if question.get("question_id") == self.question:
                 if self.ref is None:
-                    result = [a.get("text") for a in q.get("answers")]
-                elif self.a is None:
-                    row = [a.get("row") for a in q.get("answers")]
+                    result = [answer.get("text") for answer in 
+                              question.get("answers")]
+                elif self.answer is None:
+                    row = [answer.get("row") for answer in 
+                           question.get("answers")]
                     result = [self.ref[k] for k in row]
                 else:
-                    grid = [a.get("col") for a in q.get("answers") if
-                            a.get("row") == self.a]
+                    grid = [answer.get("col") for answer in 
+                            question.get("answers") if
+                            answer.get("row") == self.answer]
                     result = [self.ref[col] for col in grid]
         return result
 
@@ -44,21 +47,21 @@ class Variable:
         Variable, list of dicts (questions), value (str or num) -> none"""
         if new_value is None:
             new_value = []
-        new_q = {"question_id": self.q}
-        if self.a is None and self.ref is None:
-            new_q["answers"] = [{"row": "0", "text": new_value}]
-        elif self.a is not None and self.ref is None:
-            new_q["answers"] = [{"row": self.a, "text": new_value}]
-        elif self.a is None and self.ref is not None:
-            new_q["answers"] = [{"row": new_value}]
+        new_question = {"question_id": self.question}
+        if self.answer is None and self.ref is None:
+            new_question["answers"] = [{"row": "0", "text": new_value}]
+        elif self.answer is not None and self.ref is None:
+            new_question["answers"] = [{"row": self.answer, "text": new_value}]
+        elif self.answer is None and self.ref is not None:
+            new_question["answers"] = [{"row": new_value}]
         else:
-            new_q["answers"] = [{"row": self.a, "col": new_value}]
+            new_question["answers"] = [{"row": self.answer, "col": new_value}]
 
-        questions = [q.get("question_id") for q in responses]
-        if self.q in questions:
-            for q in responses:
-                if q.get("question_id") == self.q:
-                    responses.remove(q)
-        responses.append(new_q)
+        questions = [question.get("question_id") for question in responses]
+        if self.question in questions:
+            for question in responses:
+                if question.get("question_id") == self.question:
+                    responses.remove(question)
+        responses.append(new_question)
 
 
