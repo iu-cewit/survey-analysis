@@ -13,7 +13,7 @@ def main():
 def find_match(respondent, variable, match_list):
     """Returns the closest word or phrase from a list of possible matches
 
-    list of dicts (questions), Variable, list of str -> str"""
+    list of dicts (questions), Variable, list of str -> tuple of str"""
     res_value = variable.get_value(respondent)[0]
     # print('Value entered:', str(res_value))
     match_type = 'None'

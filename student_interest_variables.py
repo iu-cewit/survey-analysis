@@ -175,6 +175,7 @@ def main():
         school.make_value(res_data[r], schools.get(res_iu_major[0]))
 
     # Create matrix of all variable values
+    print("Variables: ", varlist)
     row = 0
     matrix = []
     for respondent in res_ids:
