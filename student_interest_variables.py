@@ -4,6 +4,7 @@ from survey_access import *
 from variables import *
 from matching import *
 import csv
+import time
 
 
 def main():
@@ -127,7 +128,6 @@ def main():
         for row in contents:
             categories[row['Major'].lower()] = row['Category']
 
-
     # lists to use in the matching process
     field_list = [field.lower() for field in fields]
     iu_major_list = [m.lower() for m in schools]
@@ -149,23 +149,45 @@ def main():
             question_ids.append(var.question)
     # print(question_ids)
 
-    # Access student interest survey via api
+    # Parameters for accessing data via survey monkey api
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'
     survey_id = '46772574'
     respondent_ids = get_respondent_ids(survey_id, local_file)
 
-    # Get responses for a subset of respondents (to limit calls/second) and
-    # the subset of questions in question_ids
-    test_respondents = respondent_ids[:50]
-    responses = get_survey_data(survey_id, local_file, test_respondents)
+    # Get responses for the subset of questions in question_ids with
+    # respondent ids split into batches of 500 to limit api calls/sec
+    batch_num = (len(respondent_ids) // 500) + 1
+    i = 0
+    row_begin = 0
+    row_end = 500
     res_data = {}
-    for respondent in responses["data"]:
-        temp = [question for question in respondent["questions"] if
-                question.get("question_id") in question_ids]
-        res_data[respondent.get("respondent_id")] = temp
+    while i <= batch_num:
+        print('rows: ' + str(row_begin) + '-' + str(row_end))
+        if i < batch_num:
+            respondents = respondent_ids[row_begin:row_end]
+        else:
+            respondents = respondent_ids[row_begin:]
+        responses = get_survey_data(survey_id, local_file, respondents)
+        for respondent in responses["data"]:
+            temp = [question for question in respondent["questions"] if
+                    question.get("question_id") in question_ids]
+            res_data[respondent.get("respondent_id")] = temp
+        row_begin += 500
+        row_end += 500
+        i += 1
+        time.sleep(5)
+
+    # old code
+    # test_respondents = respondent_ids[:50]
+    # responses = get_survey_data(survey_id, local_file, test_respondents)
+    # res_data = {}
+    # for respondent in responses["data"]:
+    #     temp = [question for question in respondent["questions"] if
+    #             question.get("question_id") in question_ids]
+    #     res_data[respondent.get("respondent_id")] = temp
 
     res_ids = [respondent for respondent in res_data.keys()]
-    print('Respondent IDs:', res_ids, '\n')
+    # print('Respondent IDs:', res_ids, '\n')
 
     field_matches = {'Exact': 0, 'Close': 0, 'None': 0}
     iu_major_matches = {'Exact': 0, 'Close': 0, 'None': 0}
