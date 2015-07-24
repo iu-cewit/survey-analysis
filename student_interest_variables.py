@@ -118,6 +118,16 @@ def main():
         for row in contents:
             schools[row['Major'].lower()] = row['School']
 
+    # dictionary of all IU majors, schools, and categories
+    source_file = '/Users/nbrodnax/Indiana/CEWIT/source_data/iu_major_cat.csv'
+    with open(source_file) as csvfile:
+        contents = csv.DictReader(csvfile, fieldnames=['Major', 'School',
+                                                       'Category'])
+        categories = {}
+        for row in contents:
+            categories[row['Major'].lower()] = row['Category']
+
+
     # lists to use in the matching process
     field_list = [field.lower() for field in fields]
     iu_major_list = [m.lower() for m in schools]
@@ -160,19 +170,19 @@ def main():
     field_matches = {'Exact': 0, 'Close': 0, 'None': 0}
     iu_major_matches = {'Exact': 0, 'Close': 0, 'None': 0}
 
-    # Populate values for new variables
+    # Populate values for new variables (unreadable - needs refactoring)
     for r in res_ids:
         # find closest matching field and use to populate field and category
         # variables
         res_field = find_match(res_data[r], major1, field_list)
         field_matches[res_field[1]] += 1
         field.make_value(res_data[r], res_field[0])
-        category.make_value(res_data[r], fields.get(res_field[0]))
 
         # find closest matching major and use to populate school variable
         res_iu_major = find_match(res_data[r], major1, iu_major_list)
         iu_major_matches[res_iu_major[1]] += 1
         school.make_value(res_data[r], schools.get(res_iu_major[0]))
+        category.make_value(res_data[r], categories.get(res_iu_major[0]))
 
     # Create matrix of all variable values
     row = 0
