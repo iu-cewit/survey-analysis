@@ -126,7 +126,7 @@ def main():
 
     # The variables I want to get data for
     varlist = [first_name, last_name, email, mailing, level, field, school,
-               category, it_career, major1, minor1, email, data_analysis,
+               category, it_career, major1, minor1, data_analysis,
                blogging, programming, graphics, humanities, social_justice,
                social_good, social_media, game_dev, gaming, interaction,
                mobile_app, web_dev, phys_computing, project_mgmt, research,
@@ -175,7 +175,6 @@ def main():
         school.make_value(res_data[r], schools.get(res_iu_major[0]))
 
     # Create matrix of all variable values
-    print("Variables: ", varlist)
     row = 0
     matrix = []
     for respondent in res_ids:
@@ -196,7 +195,12 @@ def main():
     for item in iu_major_matches.items():
         print(item)
     print('Rows added: ', str(row))
-    return matrix
+    # return matrix
+
+    # Save data to file
+    with open("data.csv", 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(matrix)
 
 
 def print_respondent(respondent, variable_list):
