@@ -20,9 +20,9 @@ colnames(data) = c('id', 'first_name', 'last_name', 'email', 'mailing',
 for (col in c(1:4,7,11:12)) {
   data[,col] <- as.character(data[,col])
   }
-for (col in c(10,13:31)) {
-  data[,col] <- as.numeric(as.character(data[,col]))
-  }
+# for (col in c(10,13:31)) {
+#   data[,col] <- as.numeric(as.character(data[,col]))
+#   }
 for (col in c(8:9)) {
   data[,col] <- factor(data[,col])
 }
@@ -41,14 +41,21 @@ plot1 <- (ggplot(data[!is.na(data$mailing),], aes(level, fill=mailing))
        + theme_solarized()
        + scale_color_solarized())
 
-# by career interest
 plot2 <- (ggplot(data[!is.na(data$it_career),], aes(level, fill=it_career)) 
           + geom_bar()
           + theme_solarized()
           + scale_color_solarized())
 
 # by school
+plot3 <- (ggplot(data[!is.na(data$mailing),], aes(school, fill=mailing)) 
+          + geom_bar()
+          + theme_solarized()
+          + scale_color_solarized())
 
+plot4 <- (ggplot(data[!is.na(data$it_career),], aes(school, fill=it_career)) 
+          + geom_bar()
+          + theme_solarized()
+          + scale_color_solarized())
 
 # by field category
 
