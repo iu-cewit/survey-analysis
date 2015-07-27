@@ -35,10 +35,10 @@ def main():
     minor3 = Variable('minor3', '594645445', "6895985041")
     email = Variable('email address', '594646446')
     interest_ref = {
-        "6926587175": 2,
-        "6926587176": 1,
-        "6926587177": 0,
-        "6926587178": -1
+        "6926587175": "Very Interested",
+        "6926587176": "Interested",
+        "6926587177": "Uninterested",
+        "6926587178": "Completely Uninterested"
     }
     data_analysis = Variable('interested in data analysis',
                              '594651002', '6926587182', interest_ref)
@@ -86,11 +86,11 @@ def main():
     }
     mentor = Variable('mentoring needs', '594654487', None, mentor_ref)
     agree_ref = {
-        "6926745140": 2,
-        "6926745141": 1,
-        "6926745142": -1,
-        "6926745143": -2,
-        "6926745144": 0
+        "6926745140": "Strongly Agree",
+        "6926745141": "Agree",
+        "6926745142": "Disagree",
+        "6926745143": "Strongly Disagree",
+        "6926745144": "Unsure/Don't Know"
     }
     it_career = Variable('interested in tech career', '597351774',
                          '6926745145', agree_ref)
@@ -156,17 +156,19 @@ def main():
 
     # Get responses for the subset of questions in question_ids with
     # respondent ids split into batches of 500 to limit api calls/sec
-    batch_num = (len(respondent_ids) // 500) + 1
+    batch_num = (len(respondent_ids) // 500)
     i = 0
     row_begin = 0
     row_end = 500
     res_data = {}
     while i <= batch_num:
-        print('rows: ' + str(row_begin) + '-' + str(row_end))
         if i < batch_num:
             respondents = respondent_ids[row_begin:row_end]
+            print('processing rows ' + str(row_begin) + '-' + str(row_end-1))
         else:
             respondents = respondent_ids[row_begin:]
+            print('processing rows ' + str(row_begin) + '-' +
+                  str(len(respondent_ids)))
         responses = get_survey_data(survey_id, local_file, respondents)
         for respondent in responses["data"]:
             temp = [question for question in respondent["questions"] if
@@ -176,15 +178,6 @@ def main():
         row_end += 500
         i += 1
         time.sleep(5)
-
-    # old code
-    # test_respondents = respondent_ids[:50]
-    # responses = get_survey_data(survey_id, local_file, test_respondents)
-    # res_data = {}
-    # for respondent in responses["data"]:
-    #     temp = [question for question in respondent["questions"] if
-    #             question.get("question_id") in question_ids]
-    #     res_data[respondent.get("respondent_id")] = temp
 
     res_ids = [respondent for respondent in res_data.keys()]
     # print('Respondent IDs:', res_ids, '\n')
