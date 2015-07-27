@@ -32,6 +32,10 @@ data$level <- factor(data$level, levels = c('Freshman', 'Sophomore', 'Junior',
                                             'Other'))
 data$mentor <- factor(data$mentor, levels = c('peer', 'faculty', 'staff',
                                               'serve'))
+data$it_career <- factor(data$it_career, levels = c('Strongly Agree',
+                                                    'Agree', 'Disgree', 
+                                                    'Strongly Disagree',
+                                                    "Unsure/Don't Know"))
 
 ### AFFILIATE BACKGROUND ###
 
@@ -50,15 +54,22 @@ plot2 <- (ggplot(data[!is.na(data$it_career),], aes(level, fill=it_career))
 plot3 <- (ggplot(data[!is.na(data$mailing),], aes(school, fill=mailing)) 
           + geom_bar()
           + theme_solarized()
-          + scale_color_solarized())
+          + scale_color_solarized()
+          + coord_flip())
+# i really want to have this one sorted by number of yes's
 
 plot4 <- (ggplot(data[!is.na(data$it_career),], aes(school, fill=it_career)) 
           + geom_bar()
           + theme_solarized()
-          + scale_color_solarized())
+          + scale_color_solarized()
+          + coord_flip())
 
 # by field category
-
+plot5 <- (ggplot(data[!is.na(data$it_career),], aes(category, fill=it_career)) 
+          + geom_bar()
+          + theme_solarized()
+          + scale_color_solarized()
+          + coord_flip())
 
 ### INTERESTS ###
 
