@@ -4,8 +4,10 @@ library(ggthemes)
 ### DATA ###
 data = read.csv("/Users/nbrodnax/Indiana/CEWIT/iu-cewit/working/data.csv", 
                 header=FALSE)
-#convert missing to null values
-data[data == '[]'] <- NA 
+
+#convert missing to unknown values
+data[data == '[]'] <- NA
+
 # update variable names
 colnames(data) = c('id', 'first_name', 'last_name', 'email', 'mailing', 
                    'level', 'field', 'school', 'category', 'it_career', 
@@ -26,57 +28,63 @@ for (col in c(1:4,7,11:12)) {
 for (col in c(8:9)) {
   data[,col] <- factor(data[,col])
 }
-data$mailing <- factor(data$mailing, levels = c('Yes', 'No'))
+data$mailing <- factor(data$mailing, levels = c('Yes', 'No', 'No Answer'))
 data$level <- factor(data$level, levels = c('Freshman', 'Sophomore', 'Junior',
                                             'Senior', 'Master', 'PhD', 'JD',
-                                            'Other'))
+                                            'Other', 'No Answer'))
 data$mentor <- factor(data$mentor, levels = c('peer', 'faculty', 'staff',
-                                              'serve'))
+                                              'serve', 'No Answer'))
 data$it_career <- factor(data$it_career, levels = c('Strongly Agree',
                                                     'Agree', 'Disgree', 
                                                     'Strongly Disagree',
-                                                    "Unsure/Don't Know"))
+                                                    "Unsure/Don't Know",
+                                                    'No Answer'))
 
-### AFFILIATE BACKGROUND ###
+### INTEREST IN JOINING CEWIT ###
 
-# by level
-plot1 <- (ggplot(data[!is.na(data$mailing),], aes(level, fill=mailing)) 
+# need to see share rather than raw count
+
+
+# raw count by level
+# need to flip categories starting with freshman
+p1 <- (ggplot(data, aes(level, fill=mailing))
+       + ylab('Number of Students')
+       + xlab('Enrollment Level')
+       + ggtitle('Student Affiliates by Enrollment Level')
        + geom_bar()
        + theme_solarized()
-       + scale_color_solarized())
+       + scale_color_solarized()
+       + coord_flip())
 
-plot2 <- (ggplot(data[!is.na(data$it_career),], aes(level, fill=it_career)) 
-          + geom_bar()
-          + theme_solarized()
-          + scale_color_solarized())
-
-# by school
-plot3 <- (ggplot(data[!is.na(data$mailing),], aes(school, fill=mailing)) 
-          + geom_bar()
-          + theme_solarized()
-          + scale_color_solarized()
-          + coord_flip())
-# i really want to have this one sorted by number of yes's
-
-plot4 <- (ggplot(data[!is.na(data$it_career),], aes(school, fill=it_career)) 
+# raw count by school
+# need to order by yes count
+p2 <- (ggplot(data[!is.na(data$mailing),], aes(school, fill=mailing)) 
           + geom_bar()
           + theme_solarized()
           + scale_color_solarized()
           + coord_flip())
 
-# by field category
-plot5 <- (ggplot(data[!is.na(data$it_career),], aes(category, fill=it_career)) 
+# need yes-only by school with fill by grad/undergrad
+yes_mailing <- data[data$mailing == 'Yes',]
+yes_count <- nrow(yes_mailing)
+p3 <- (ggplot(yes_mailing[!is.na(yes_mailing$school),], aes(school, fill=level))
+       + geom_bar()
+       + theme_solarized()
+       + coord_flip())
+
+# by category
+p4 <- (ggplot(data[!is.na(data$category),], aes(category, fill=mailing)) 
           + geom_bar()
           + theme_solarized()
           + scale_color_solarized()
           + coord_flip())
 
-### INTERESTS ###
 
-# skills
-
-
-# technologies
+### INTEREST IN TECH CAREER ###
 
 
-# mentoring by type
+### INTEREST IN MENTORING ###
+
+
+### INTEREST IN SPECIFIC TECHNOLOGY ###
+
