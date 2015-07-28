@@ -1,5 +1,6 @@
 library(ggplot2)
 library(ggthemes)
+library(likert)
 
 ### DATA ###
 data = read.csv("/Users/nbrodnax/Indiana/CEWIT/iu-cewit/working/data.csv", 
@@ -29,32 +30,35 @@ for (col in c(8:9)) {
   data[,col] <- factor(data[,col])
 }
 data$mailing <- factor(data$mailing, levels = c('Yes', 'No', 'No Answer'))
-data$level <- factor(data$level, levels = c('Freshman', 'Sophomore', 'Junior',
-                                            'Senior', 'Master', 'PhD', 'JD',
-                                            'Other', 'No Answer'))
+# data$level <- factor(data$level, levels = c('Freshman', 'Sophomore', 'Junior',
+#                                             'Senior', 'Master', 'PhD', 'JD',
+#                                             'Other'))
+data$level <- factor(data$level, levels = c('Other', 'JD', 'PhD', 'Master',
+                                            'Senior', 'Junior', 'Sophomore',
+                                            'Freshman'))
 data$mentor <- factor(data$mentor, levels = c('peer', 'faculty', 'staff',
-                                              'serve', 'No Answer'))
+                                              'serve'))
 data$it_career <- factor(data$it_career, levels = c('Strongly Agree',
                                                     'Agree', 'Disgree', 
                                                     'Strongly Disagree',
-                                                    "Unsure/Don't Know",
-                                                    'No Answer'))
+                                                    "Unsure/Don't Know"))
 
 ### INTEREST IN JOINING CEWIT ###
 
-# need to see share rather than raw count
-
-
 # raw count by level
-# need to flip categories starting with freshman
-p1 <- (ggplot(data, aes(level, fill=mailing))
+p1 <- (ggplot(data[which(!is.na(data$mailing) & !is.na(data$level)),], 
+              aes(level, fill=mailing))
        + ylab('Number of Students')
        + xlab('Enrollment Level')
-       + ggtitle('Student Affiliates by Enrollment Level')
+       + ggtitle('Mailing List Opt-Ins by Enrollment Level')
        + geom_bar()
        + theme_solarized()
        + scale_color_solarized()
-       + coord_flip())
+       + coord_flip()
+       + scale_fill_discrete(name='Opt-In to\nMailing List?'))
+
+# share by level
+
 
 # raw count by school
 # need to order by yes count
