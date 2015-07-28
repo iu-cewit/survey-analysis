@@ -14,6 +14,7 @@ my_dict = {"price": 542.23, "name": "ACME", "shares": 100, 'names':
 survey1 = '47476967'
 survey2 = '46658731'
 survey3 = '48173850'
+survey_id = '46772574'
 respondent_fields = ['ip_address']
 survey_fields = ['title', 'date_created', 'question_count', 'num_responses']
 
@@ -36,7 +37,7 @@ api = ApiService(auth['key'], auth['token'])
 # Responses #
 # ######### #
 
-respondent_ids = get_respondent_ids(survey3, local_file)
-data = {'survey_id': survey3, 'respondent_ids': respondent_ids[:2]}
+respondent_ids = get_respondent_ids(survey_id, local_file)
+data = {'survey_id': survey_id, 'respondent_ids': respondent_ids[:11]}
 responses = api.get_responses(data)
 print(json.dumps(responses, sort_keys=True, indent=2))
