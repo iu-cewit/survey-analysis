@@ -206,7 +206,7 @@ def main():
         row_data = [respondent]
         for variable in varlist:
             value = variable.get_value(res_data[respondent])
-            if len(value) != 0:
+            if len(value) == 1:
                 row_data.append(value[0])
             else:
                 row_data.append(value)
