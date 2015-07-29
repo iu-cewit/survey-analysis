@@ -98,7 +98,7 @@ def main():
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'
     survey_id = '46772574'
     respondent_ids = get_respondent_ids(survey_id, local_file)
-    respondent_ids = respondent_ids[:5]  # for testing
+    # respondent_ids = respondent_ids[:10]  # subset for testing only
 
     # 3: Gets response data for the subset of questions in question_ids with
     # respondent ids split into batches of 500 to limit api calls/sec
@@ -208,9 +208,10 @@ def main():
         res_categories = cat_count.copy()
         for variable in interests:
             value = variable.get_value(res_data[respondent])
-            if value[0] in ['Agree', 'Strongly Agree', 'Interested',
-                            'Very Interested']:
-                res_categories[categories[variable]] = 1
+            if len(value) > 0:
+                if value[0] in ['Agree', 'Strongly Agree', 'Interested',
+                                'Very Interested']:
+                    res_categories[categories[variable]] = 1
         # for workshop variable from question 9, get list of values and
         # categorize
         res_workshops = workshops.get_value(res_data[respondent])
@@ -221,16 +222,35 @@ def main():
                 res_categories[categories[item]] = 1
         for category in res_categories:
             row_data[category] = res_categories[category]
-        newsletter_preferences[row_data['email address']] = row_data
+        email_addr = row_data['email address']
+        if isinstance(email_addr, str):
+            newsletter_preferences[email_addr] = row_data
 
     # 6: Makes a copy of the newsletter recipients file with interests added
     # open the newsletter recipients file
-    # save recipient info into a dictionary
-    # open a new csv file
-    # get recipient
-    # look up interests with email address
-    # create a new dictionary with all info
-    # save recipient to new csv file
+    fieldnames_in = ['last', 'first', 'email', 'CEWIT_Staff', 'AC',
+                     'Faculty_LT', 'Staff_LT', 'WESIT_LT', 'IUWIT',
+                     'Faculty_Alliance', 'WESIT', 'Alum', 'Circle_leader',
+                     'Circles', 'Other']
+    fieldnames_out = fieldnames_in.copy()
+    for category in cat_count:
+        fieldnames_out.append(category)
+    with open('newsletter_recipients.csv', 'r') as infile, \
+            open('newsletter_preferences.csv', 'w') as outfile:
+        reader = csv.DictReader(infile, fieldnames_in)
+        next(reader, None)  # skip the header row
+        writer = csv.DictWriter(outfile, fieldnames_out)
+        writer.writeheader()
+        for recipient in reader:
+            temp = recipient.copy()
+            if recipient['email'] in newsletter_preferences:
+                prefs = newsletter_preferences[recipient['email']]
+                for pref in cat_count:
+                    temp[pref] = prefs[pref]
+            else:
+                for pref in cat_count:
+                    temp[pref] = cat_count[pref]
+            writer.writerow(temp)
 
 
 if __name__ == '__main__':
