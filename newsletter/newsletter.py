@@ -1,4 +1,4 @@
-# Import student interest survey results into salesforce marketing cloud
+# Translate student interest survey results into newsletter preferences
 
 from survey_access import *
 from variables import *
@@ -7,7 +7,7 @@ import time
 
 
 def main():
-    # 1: Generate variables from survey monkey questions
+    # 1: Defines the variables based survey monkey questions
     first_name = Variable('first name', '592547791')
     last_name = Variable('last name', '592547959')
     email = Variable('email address', '594646446')
@@ -79,26 +79,28 @@ def main():
     workshops = Variable('interested in workshops', '597361598', None,
                          workshop_ref)
 
-    # The variables I want to get data for
+    # 2: Creates a list of the variables you want to get data for and gets all
+    # the info you need to request the data via the survey monkey api
     varlist = [first_name, last_name, email, it_career, data_analysis,
                blogging, programming, graphics, humanities, social_justice,
                social_good, social_media, game_dev, gaming, interaction,
                mobile_app, web_dev, phys_computing, project_mgmt, research,
                security, education, higher_ed, workshops]
 
-    # Create subset of questions corresponding to variables
+    # A list of only those survey questions corresponding to variables
     question_ids = []
     for var in varlist:
         if var.question not in question_ids:
             question_ids.append(var.question)
-    # print(question_ids)
 
     # Parameters for accessing data via survey monkey api
+    # local_file contains your api key (line 1) and access token (line 2)
     local_file = '/Users/nbrodnax/Indiana/CEWIT/survey_monkey_auth.txt'
     survey_id = '46772574'
     respondent_ids = get_respondent_ids(survey_id, local_file)
+    respondent_ids = respondent_ids[:5]  # for testing
 
-    # Get responses for the subset of questions in question_ids with
+    # 3: Gets response data for the subset of questions in question_ids with
     # respondent ids split into batches of 500 to limit api calls/sec
     batch_num = (len(respondent_ids) // 500)
     i = 0
@@ -123,28 +125,113 @@ def main():
         i += 1
         time.sleep(5)
 
+    # A list of unique respondent ids - you will use this to create a
+    # dictionary of newsletter preferences for each survey respondent
     res_ids = [respondent for respondent in res_data.keys()]
 
-    # Dictionary of categories
+    # 4: Defines the mapping of topics and workshops to categories
 
-    # Create matrix of all variable values - need to refactor
-    row = 0
-    matrix = []
+    # Dictionary identifying the category for each topic. The keys are either
+    # variable names (no quotes) or workshop topics (with quotes)
+    categories = {
+        data_analysis: 'No category',
+        blogging: 'No category',
+        programming: 'Programming/coding',
+        graphics: 'Digital Humanities',
+        humanities: 'Digital Humanities',
+        social_justice: 'Volunteer or Service Opportunities',
+        social_good: 'Volunteer or Service Opportunities',
+        social_media: 'Social Media',
+        game_dev: 'Game Development',
+        gaming: 'Game Development',
+        interaction: 'Web Design/Development',
+        mobile_app: 'App Design/Development',
+        web_dev: 'Web Design/Development',
+        phys_computing: 'No category',
+        project_mgmt: 'Leadership',
+        research: 'Research Technologies',
+        security: 'No category',
+        education: 'Teaching Technologies',
+        higher_ed: 'Teaching Technologies',
+        it_career: 'Tech Career Info/Opportunities',
+        'other': 'No category',
+        'presentation': 'No category',
+        'web design': 'Web Design/Development',
+        'e-portfolio': 'Web Design/Development',
+        'video editing': 'No category',
+        'mobile app dev': 'App Design/Development',
+        'social media': 'Social Media',
+        'adobe': 'Web Design/Development',
+        'programming': 'Programming/coding',
+        'none': 'No category'
+    }
+
+    # Dictionary identifying the level of interest (1=yes, 0=no) for each
+    # category.  You will create one of these for each respondent and modify
+    # the level of interest depending on how she answered the survey
+    cat_count = {
+        'App Design/Development': 0,
+        'Digital Humanities': 0,
+        'Game Development': 0,
+        'Leadership': 0,
+        'Programming/coding': 0,
+        'Research Technologies': 0,
+        'Social Media': 0,
+        'Teaching Technologies': 0,
+        'Tech Career Info/Opportunities': 0,
+        'Volunteer or Service Opportunities': 0,
+        'Web Design/Development': 0,
+        'No category': 0
+    }
+
+    # 5: Generate newsletter preferences based on three kinds of variables:
+    # info (3), interests (20), and workshops (1)
+    info = [first_name, last_name, email]
+
+    interests = [data_analysis, blogging, programming, graphics, humanities,
+                 social_justice, social_good, social_media, game_dev, gaming,
+                 interaction, mobile_app, web_dev, phys_computing,
+                 project_mgmt, research, security, education, higher_ed,
+                 it_career]
+
+    newsletter_preferences = {}
     for respondent in res_ids:
-        row_data = [respondent]
-        for variable in varlist:
+        row_data = {'id': respondent}
+        # for info variables, get the values
+        for variable in info:
             value = variable.get_value(res_data[respondent])
             if len(value) == 1:
-                row_data.append(value[0])
+                row_data[variable.description] = value[0]
             else:
-                row_data.append(value)
-        matrix.append(row_data)
-        row += 1
+                row_data[variable.description] = value
+        # for interest variables from question 8, get values and categorize
+        res_categories = cat_count.copy()
+        for variable in interests:
+            value = variable.get_value(res_data[respondent])
+            if value[0] in ['Agree', 'Strongly Agree', 'Interested',
+                            'Very Interested']:
+                res_categories[categories[variable]] = 1
+        # for workshop variable from question 9, get list of values and
+        # categorize
+        res_workshops = workshops.get_value(res_data[respondent])
+        if len(res_workshops) == 1:
+            res_categories[categories[res_workshops[0]]] = 1
+        elif len(res_workshops) > 1:
+            for item in res_workshops:
+                res_categories[categories[item]] = 1
+        for category in res_categories:
+            row_data[category] = res_categories[category]
+        newsletter_preferences[row_data['email address']] = row_data
 
-    # Save data to file
-    with open("newsletter.csv", 'w') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(matrix)
+    # 6: Makes a copy of the newsletter recipients file with interests added
+    # open the newsletter recipients file
+    # save recipient info into a dictionary
+    # open a new csv file
+    # get recipient
+    # look up interests with email address
+    # create a new dictionary with all info
+    # save recipient to new csv file
+
 
 if __name__ == '__main__':
     main()
