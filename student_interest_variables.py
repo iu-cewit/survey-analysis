@@ -9,8 +9,8 @@ import time
 
 def main():
     # 1: Generate variables from survey monkey questions
-    first_name = Variable('first name', '592547791')
-    last_name = Variable('last name', '592547959')
+    first_name = Variable('first name', '592547791', '0')
+    last_name = Variable('last name', '592547959', '0')
     level_ref = {
         "6915931739": "Other",
         "6915931746": "Freshman",
@@ -28,12 +28,12 @@ def main():
     mailing_ref = {"6926768925": "Yes", "6926768926": "No"}
     mailing = Variable('opt-in mailing list', '592549927', ref=mailing_ref)
     major1 = Variable('major1', '594645333', "6925814179")
-    major2 = Variable('major2', '594645333', "6925814180")
-    major3 = Variable('major3', '594645333', "6925814181")
+    # major2 = Variable('major2', '594645333', "6925814180")
+    # major3 = Variable('major3', '594645333', "6925814181")
     minor1 = Variable('minor1', '594645445', "6895985038")
-    minor2 = Variable('minor2', '594645445', "6895985039")
-    minor3 = Variable('minor3', '594645445', "6895985041")
-    email = Variable('email address', '594646446')
+    # minor2 = Variable('minor2', '594645445', "6895985039")
+    # minor3 = Variable('minor3', '594645445', "6895985041")
+    email = Variable('email address', '594646446', '0')
     interest_ref = {
         "6926587175": "Very Interested",
         "6926587176": "Interested",
