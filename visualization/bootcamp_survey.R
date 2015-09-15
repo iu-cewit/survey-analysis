@@ -3,6 +3,8 @@ library(ggthemes)
 library(likert)
 library(scales)
 library(reshape)
+library(extrafont)
+loadfonts()
 
 ### DATA ###
 data_file <- "/Users/nbrodnax/Indiana/CEWIT/iu-cewit/working/bootcamp_data.csv"
@@ -29,9 +31,12 @@ activities <- rename(activities, c(
   callout = 'WESIT Callout Planning'
   ))
 activity_rating <- likert(activities)
-title <- 'Leadership Bootcamp Activity Ratings'
-activity_plot <- (plot(activity_rating, centered = FALSE) + ggtitle(title))
-ggsave(file="activity.pdf")
+title <- 'Figure 1: Leadership Bootcamp Activity Ratings'
+activity_plot <- (plot(activity_rating, centered = FALSE) 
+                  + ggtitle(title))
+pdf("activity.pdf", family="CM Roman")
+activity_plot
+dev.off()
 
 ### FACILITY RATING ###
 for (col in c(14:20)) {
@@ -49,9 +54,11 @@ facility <- rename(facility, c(
   food_snack = 'Sunday Snack'
 ))
 facility_rating <- likert(facility)
-title <- 'Leadership Bootcamp Facility Ratings'
+title <- 'Figure 2: Leadership Bootcamp Facility Ratings'
 facility_plot <- (plot(facility_rating, centered = FALSE) + ggtitle(title))
-ggsave(file="facility.pdf")
+pdf("facility.pdf", family="CM Roman")
+facility_plot
+dev.off()
 
 ### STATEMENTS ###
 for (col in c(21:28)) {
@@ -64,8 +71,9 @@ statements <- rename(statements, c(
   purpose = 'I have a clear understanding of the purpose and goals of CEWIT.',
   my_role = 'I have a clear understanding of my role as a part of the CEWIT 
   leadership.',
-  other_role = 'I have a clear understanding of the roles of WESIT executive 
-  board members and directors, SIG interns, and CEWIT staff members.',
+  other_role = 'I have a clear understanding of the roles of WESIT executive
+  board 
+  members and directors, SIG interns, and CEWIT staff members.',
   needs = 'I have a clear understanding of what students want and need from CEWIT.',
   team = 'I feel more connected to members of my team.',
   leadership = 'I feel more connected to the CEWIT leadership as a whole.',
@@ -74,21 +82,29 @@ statements <- rename(statements, c(
 ))
 
 agreement <- likert(statements[,1:2], grouping = data$affiliation)
-title <- 'Understanding'
+title <- 'Figure 3a: Understanding'
 agreement_plot0 <- (plot(agreement, centered = FALSE) + ggtitle(title))
-ggsave(file="agreement0.pdf")
+pdf("agreement0.pdf", family="CM Roman")
+agreement_plot0
+dev.off()
 
 agreement <- likert(statements[,3:4], grouping = data$affiliation)
-title <- 'Understanding'
+title <- 'Figure 3b: Understanding'
 agreement_plot1 <- (plot(agreement, centered = FALSE) + ggtitle(title))
-ggsave(file="agreement1.pdf")
+pdf("agreement1.pdf", family="CM Roman")
+agreement_plot1
+dev.off()
 
 agreement <- likert(statements[,5:6], grouping = data$affiliation)
-title <- 'Connectedness'
+title <- 'Figure 4: Connectedness'
 agreement_plot2 <- (plot(agreement, centered = FALSE) + ggtitle(title))
-ggsave(file="agreement2.pdf")
+pdf("agreement2.pdf", family="CM Roman")
+agreement_plot2
+dev.off()
 
 agreement <- likert(statements[,7:8], grouping = data$affiliation)
-title <- 'Preparation'
+title <- 'Figure 5: Preparation'
 agreement_plot3 <- (plot(agreement, centered = FALSE) + ggtitle(title))
-ggsave(file="agreement3.pdf")
+pdf("agreement3.pdf", family="CM Roman")
+agreement_plot3
+dev.off()
