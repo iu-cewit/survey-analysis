@@ -228,14 +228,12 @@ def main():
 
     # 6: Makes a copy of the newsletter recipients file with interests added
     # open the newsletter recipients file
-    fieldnames_in = ['last', 'first', 'email', 'CEWIT_Staff', 'AC',
-                     'Faculty_LT', 'Staff_LT', 'WESIT_LT', 'IUWIT',
-                     'Faculty_Alliance', 'WESIT', 'Alum', 'Circle_leader',
-                     'Circles', 'Other']
+    fieldnames_in = ['last', 'first', 'email']
     fieldnames_out = fieldnames_in.copy()
     for category in cat_count:
         fieldnames_out.append(category)
-    with open('newsletter_recipients.csv', 'r') as infile, \
+    with open('newsletter_recipients.csv', 'r', encoding='utf-8',
+              errors='ignore') as infile, \
             open('newsletter_preferences.csv', 'w') as outfile:
         reader = csv.DictReader(infile, fieldnames_in)
         next(reader, None)  # skip the header row
