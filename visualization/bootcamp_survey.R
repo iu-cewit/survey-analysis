@@ -32,8 +32,7 @@ activities <- rename(activities, c(
   ))
 activity_rating <- likert(activities)
 title <- 'Figure 1: Leadership Bootcamp Activity Ratings'
-activity_plot <- (plot(activity_rating, centered = FALSE) 
-                  + ggtitle(title))
+activity_plot <- (plot(activity_rating, centered = FALSE))
 pdf("activity.pdf", family="CM Roman")
 activity_plot
 dev.off()
@@ -55,7 +54,7 @@ facility <- rename(facility, c(
 ))
 facility_rating <- likert(facility)
 title <- 'Figure 2: Leadership Bootcamp Facility Ratings'
-facility_plot <- (plot(facility_rating, centered = FALSE) + ggtitle(title))
+facility_plot <- (plot(facility_rating, centered = FALSE))
 pdf("facility.pdf", family="CM Roman")
 facility_plot
 dev.off()
@@ -83,28 +82,28 @@ statements <- rename(statements, c(
 
 agreement <- likert(statements[,1:2], grouping = data$affiliation)
 title <- 'Figure 3a: Understanding'
-agreement_plot0 <- (plot(agreement, centered = FALSE) + ggtitle(title))
+agreement_plot0 <- (plot(agreement, centered = FALSE))
 pdf("agreement0.pdf", family="CM Roman")
 agreement_plot0
 dev.off()
 
 agreement <- likert(statements[,3:4], grouping = data$affiliation)
 title <- 'Figure 3b: Understanding'
-agreement_plot1 <- (plot(agreement, centered = FALSE) + ggtitle(title))
+agreement_plot1 <- (plot(agreement, centered = FALSE))
 pdf("agreement1.pdf", family="CM Roman")
 agreement_plot1
 dev.off()
 
 agreement <- likert(statements[,5:6], grouping = data$affiliation)
 title <- 'Figure 4: Connectedness'
-agreement_plot2 <- (plot(agreement, centered = FALSE) + ggtitle(title))
+agreement_plot2 <- (plot(agreement, centered = FALSE))
 pdf("agreement2.pdf", family="CM Roman")
 agreement_plot2
 dev.off()
 
 agreement <- likert(statements[,7:8], grouping = data$affiliation)
 title <- 'Figure 5: Preparation'
-agreement_plot3 <- (plot(agreement, centered = FALSE) + ggtitle(title))
+agreement_plot3 <- (plot(agreement, centered = FALSE))
 pdf("agreement3.pdf", family="CM Roman")
 agreement_plot3
 dev.off()
