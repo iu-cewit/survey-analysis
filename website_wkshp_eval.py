@@ -13,29 +13,71 @@ api = ApiService(auth['key'], auth['token'])
 # api.save_survey_list(field_list=field_list)
 
 # 2: Get the relevant survey id from the survey list
-survey_id = '71496549' # survey for part 1
-survey_id = '71783041' # survey for part 2
-# NEED A WAY TO COMBINE DATA FROM TWO SURVEYS INTO ONE SET OF DETAILS
-# AND QUESTIONS IN PART 3
+surveys = ['71496549', '71783041']  # evaluation surveys for parts 1 and 2
 
 # 3: Get survey details and questions and save to a text file for reference
-data = {'survey_id': survey_id}
-details = api.get_survey_details(data)
-with open('survey_details.txt', 'w') as file:
-    file.write(json.dumps(details, sort_keys=True, indent=2))
-
-questions = get_questions(survey_id, local_file)
-with open('survey_questions.txt', 'w') as file:
-    file.write(json.dumps(questions, sort_keys=True, indent=2))
+with open('details.txt', 'w') as d, open('questions.txt', 'w') as q:
+    for survey in surveys:
+        survey_id = survey
+        data = {'survey_id': survey_id}
+        details = api.get_survey_details(data)
+        d.write(json.dumps(details, sort_keys=True, indent=2))
+        questions = get_questions(survey_id, local_file)
+        q.write(json.dumps(questions, sort_keys=True, indent=2))
 
 # 4: Create variables from survey monkey questions
-# All variables require a description and a question id.  This maps your
-# variable to the survey question.  Optional parameters include the specific
-# answer id and a reference dictionary, depending on the type of question.
-# Reference dictionaries must be defined before the variable object that
-# will use it as a parameter.
+affil_ref = {
+    "9596618678": "Other (please specify)",
+    "9596618681": "PhD Student",
+    "9596618682": "Faculty - Tenure Track",
+    "9596618683": "Faculty - Non-Tenure Track"
+}
+p1_affil = Variable('attendee affiliation', '876032204', ref=affil_ref)
+market_ref = {
+    "9596717221": "Other (please specify)",
+    "9596717224": "Invitation from CEWiT",
+    "9596717225": "Departmental or organizational listserv",
+    "9596717226": "eNewsletter from WESiT",
+    "9596717227": "eNewsletter from GPSG",
+    "9596717228": "SSRC Events page",
+    "9596717229": "Email from peer/colleague",
+    "9596717230": "Facebook",
+    "9596717231": "Twitter",
+    "9596717232": "Word of mouth"
+}
+p1_market = Variable('marketing penetration', '876034750', market_ref)
+agree_ref = {
+    "9596648173": "Disagree",
+    "9596648174": "Neutral",
+    "9596648176": "Agree",
+    "9596648177": "Strongly Agree",
+    "9596648178": "I Don't Know"
+}
+p1_useful = Variable('found material useful', '876036733', '9596648167',
+                    agree_ref)
+p1_new = Variable('covered new material', '876036733', '9596648168', agree_ref)
+p1_info = Variable('has enough info to build site', '876036733', '9596648169',
+                    agree_ref)
+p1_build = Variable('plans to build site', '876036733', '9596648171', agree_ref)
+rating_ref = {
+    "9596660704": "Very Poor",
+    "9596660705": "Poor",
+    "9596660706": "Neutral",
+    "9596660707": "Good",
+    "9596660708": "Excellent",
+    "9596660709": "I Don't Know"
+}
+p1_location = Variable('location', '876038248', '9596660697', rating_ref)
+p1_room = Variable('room', '876038248', '9596660698', rating_ref)
+p1_computer = Variable('computers', '876038248', '9596660700', rating_ref)
+p1_photo = Variable('photographer', '876038248', '9596660701', rating_ref)
+p1_video = Variable('video', '876038248', '9596660702', rating_ref)
+p1_audio = Variable('audio', '876038248', '9596660703', rating_ref)
 
-varlist = []
+varlist = [p1_affil, p1_market, p1_useful, p1_new, p1_info, p1_build,
+           p1_location, p1_room, p1_computer, p1_photo, p1_video, p1_audio]
+
+# NEED TO ADD PART 2 VARIABLES
 
 question_ids = []
 for var in varlist:
@@ -47,6 +89,9 @@ for var in varlist:
 # one api call
 respondent_ids = get_respondent_ids(survey_id, local_file)
 responses = get_survey_data(survey_id, local_file, respondent_ids)
+
+# NEED TO GET ALL RESPONSES AND RESPONDENT IDS FOR BOTH SURVEYS AT ONCE
+
 res_data = {}
 for respondent in responses["data"]:
     temp = [question for question in respondent["questions"] if
