@@ -148,27 +148,18 @@ for var in varlist:
 # 5: Get responses for the subset of questions in question_ids for all
 # respondents of the survey (no need to batch since all can be obtained with
 # one api call
-respondent_ids = {}
-responses = {}
+respondent_ids = []
+s_data = []
 
 for survey_id in surveys:
     s_ids = get_respondent_ids(survey_id, local_file)
-    i = 0
-    while i < len(s_ids):
-        s_id = s_ids['data'].popitem()
-        respondent_ids[s_id[0]] = s_id[1]
-        i += 1
+    for s_id in s_ids:
+        respondent_ids.append(s_id)
     s_responses = get_survey_data(survey_id, local_file, respondent_ids)
-    i = 0
-    while i < len(s_responses):
-        s_response = s_responses['data'].popitem()
-        responses[s_response[0]] = s_response[1]
-        i += 1
-    # this is repetitive -- can create a function for dict transfer later
+    for response in s_responses['data']:
+        s_data.append(response)
 
-
-# NEED TO GET ALL RESPONSES AND RESPONDENT IDS FOR BOTH SURVEYS AT ONCE
-
+responses = {'data': s_data}
 res_data = {}
 for respondent in responses["data"]:
     temp = [question for question in respondent["questions"] if
