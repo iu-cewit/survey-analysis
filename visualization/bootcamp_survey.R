@@ -7,7 +7,7 @@ library(extrafont)
 loadfonts()
 
 ### DATA ###
-data_file <- "/Users/nbrodnax/Indiana/CEWIT/iu-cewit/working/bootcamp_data.csv"
+data_file <- "/Users/nbrodnax/Indiana/CEWIT/evaluation/surveys/bootcamp_15/data/bootcamp_data.csv"
 data <- read.csv(data_file, header=TRUE)
 
 # need to subset data so "did not attend/not applicable" doesn't show up

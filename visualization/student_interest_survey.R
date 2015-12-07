@@ -5,7 +5,7 @@ library(scales)
 library(reshape)
 
 ### DATA ###
-data = read.csv("/Users/nbrodnax/Indiana/CEWIT/iu-cewit/working/data.csv", 
+data = read.csv("/Users/nbrodnax/Indiana/CEWIT/evaluation/surveys/student_interest_14/data/data.csv", 
                 header=FALSE)
 
 #convert missing to unknown values
