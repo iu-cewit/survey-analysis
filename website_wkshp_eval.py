@@ -155,8 +155,9 @@ for survey_id in surveys:
     s_ids = get_respondent_ids(survey_id, local_file)
     for s_id in s_ids:
         respondent_ids.append(s_id)
-    s_responses = get_survey_data(survey_id, local_file, respondent_ids)
+    s_responses = get_survey_data(survey_id, local_file, s_ids)
     for response in s_responses['data']:
+        print(response, '\n')
         s_data.append(response)
 
 responses = {'data': s_data}
