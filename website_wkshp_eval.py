@@ -101,7 +101,7 @@ site_ref = {
     "9618213271": "No"
 }
 p1_affil = Variable('attendee affiliation', '876032204', ref=affil_ref)
-p1_market = Variable('marketing penetration', '876034750', market_ref)
+p1_market = Variable('marketing penetration', '876034750', ref=market_ref)
 p1_useful = Variable('found material useful', '876036733', '9596648167',
                      agree_ref)
 p1_new = Variable('covered new material', '876036733', '9596648168', agree_ref)
@@ -114,10 +114,10 @@ p1_computer = Variable('computers', '876038248', '9596660700', rating_ref)
 p1_photo = Variable('photographer', '876038248', '9596660701', rating_ref)
 p1_video = Variable('video', '876038248', '9596660702', rating_ref)
 p1_audio = Variable('audio', '876038248', '9596660703', rating_ref)
-p1_gender = Variable('gender', '876040299', gender_ref)
+p1_gender = Variable('gender', '876040299', ref=gender_ref)
 
-p2_affil = Variable('attendee affiliation', '878943755', affil_ref)
-p2_market = Variable('marketing penetration', '878943756', market_ref)
+p2_affil = Variable('attendee affiliation', '878943755', ref=affil_ref)
+p2_market = Variable('marketing penetration', '878943756', ref=market_ref)
 p2_useful = Variable('found material useful', '878943757', '9618206443',
                      agree_ref)
 p2_new = Variable('covered new material', '878943757', '9618206444', agree_ref)
@@ -131,8 +131,8 @@ p2_audio = Variable('audio', '878943758', '9618264858', rating_ref)
 p2_usable = Variable('Weebly usability', '878943758', '9618264859', rating_ref)
 p2_flexible = Variable('Weebly flexibility', '878943758', '9618264860',
                        rating_ref)
-p2_gender = Variable('gender', '878943759', gender_ref)
-p2_site = Variable('built site', '878946400', site_ref)
+p2_gender = Variable('gender', '878943759', ref=gender_ref)
+p2_site = Variable('built site', '878946400', ref=site_ref)
 
 varlist = [p1_affil, p1_market, p1_useful, p1_new, p1_info, p1_build, p1_room,
            p1_location, p1_computer, p1_photo, p1_video, p1_audio, p1_gender,
