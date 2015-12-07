@@ -16,14 +16,13 @@ api = ApiService(auth['key'], auth['token'])
 surveys = ['71496549', '71783041']  # evaluation surveys for parts 1 and 2
 
 # 3: Get survey details and questions and save to a text file for reference
-with open('details.txt', 'w') as d, open('questions.txt', 'w') as q:
-    for survey in surveys:
-        survey_id = survey
-        data = {'survey_id': survey_id}
-        details = api.get_survey_details(data)
-        d.write(json.dumps(details, sort_keys=True, indent=2))
-        questions = get_questions(survey_id, local_file)
-        q.write(json.dumps(questions, sort_keys=True, indent=2))
+# with open('details.txt', 'w') as d, open('questions.txt', 'w') as q:
+#     for survey_id in surveys:
+#         data = {'survey_id': survey_id}
+#         details = api.get_survey_details(data)
+#         d.write(json.dumps(details, sort_keys=True, indent=2))
+#         questions = get_questions(survey_id, local_file)
+#         q.write(json.dumps(questions, sort_keys=True, indent=2))
 
 # 4: Create variables from survey monkey questions
 affil_ref = {
@@ -104,10 +103,10 @@ site_ref = {
 p1_affil = Variable('attendee affiliation', '876032204', ref=affil_ref)
 p1_market = Variable('marketing penetration', '876034750', market_ref)
 p1_useful = Variable('found material useful', '876036733', '9596648167',
-                    agree_ref)
+                     agree_ref)
 p1_new = Variable('covered new material', '876036733', '9596648168', agree_ref)
 p1_info = Variable('has enough info to build site', '876036733', '9596648169',
-                    agree_ref)
+                   agree_ref)
 p1_build = Variable('plan to build site', '876036733', '9596648171', agree_ref)
 p1_location = Variable('location', '876038248', '9596660697', rating_ref)
 p1_room = Variable('room', '876038248', '9596660698', rating_ref)
@@ -120,10 +119,10 @@ p1_gender = Variable('gender', '876040299', gender_ref)
 p2_affil = Variable('attendee affiliation', '878943755', affil_ref)
 p2_market = Variable('marketing penetration', '878943756', market_ref)
 p2_useful = Variable('found material useful', '878943757', '9618206443',
-                    agree_ref)
+                     agree_ref)
 p2_new = Variable('covered new material', '878943757', '9618206444', agree_ref)
 p2_info = Variable('has enough info to build site', '878943757', '9618206445',
-                    agree_ref)
+                   agree_ref)
 p2_location = Variable('location', '878943758', '9618264854', rating_ref)
 p2_room = Variable('room', '878943758', '9618264855', rating_ref)
 p2_computer = Variable('computers', '878943758', '9618264856', rating_ref)
@@ -141,8 +140,6 @@ varlist = [p1_affil, p1_market, p1_useful, p1_new, p1_info, p1_build, p1_room,
            p2_location, p2_computer, p2_video, p2_gender, p2_site, p2_usable,
            p2_flexible]
 
-# NEED TO ADD PART 2 VARIABLES
-
 question_ids = []
 for var in varlist:
     if var.question not in question_ids:
@@ -151,8 +148,24 @@ for var in varlist:
 # 5: Get responses for the subset of questions in question_ids for all
 # respondents of the survey (no need to batch since all can be obtained with
 # one api call
-respondent_ids = get_respondent_ids(survey_id, local_file)
-responses = get_survey_data(survey_id, local_file, respondent_ids)
+respondent_ids = {}
+responses = {}
+
+for survey_id in surveys:
+    s_ids = get_respondent_ids(survey_id, local_file)
+    i = 0
+    while i < len(s_ids):
+        s_id = s_ids['data'].popitem()
+        respondent_ids[s_id[0]] = s_id[1]
+        i += 1
+    s_responses = get_survey_data(survey_id, local_file, respondent_ids)
+    i = 0
+    while i < len(s_responses):
+        s_response = s_responses['data'].popitem()
+        responses[s_response[0]] = s_response[1]
+        i += 1
+    # this is repetitive -- can create a function for dict transfer later
+
 
 # NEED TO GET ALL RESPONSES AND RESPONDENT IDS FOR BOTH SURVEYS AT ONCE
 
