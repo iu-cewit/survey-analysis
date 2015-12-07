@@ -1,4 +1,5 @@
-# See bootcamp_eval.py for detailed explanation of steps
+# See bootcamp_eval.py for detailed explanation of steps for one-survey case
+# This script creates one data file for two surveys
 # from survey_monkey_api import *
 from variables import *
 from survey_access import *
@@ -100,39 +101,36 @@ site_ref = {
     "9618213270": "No",
     "9618213271": "No"
 }
-p1_affil = Variable('attendee affiliation', '876032204', ref=affil_ref)
-p1_market = Variable('marketing penetration', '876034750', ref=market_ref)
-p1_useful = Variable('found material useful', '876036733', '9596648167',
-                     agree_ref)
-p1_new = Variable('covered new material', '876036733', '9596648168', agree_ref)
-p1_info = Variable('has enough info to build site', '876036733', '9596648169',
-                   agree_ref)
-p1_build = Variable('plan to build site', '876036733', '9596648171', agree_ref)
-p1_location = Variable('location', '876038248', '9596660697', rating_ref)
-p1_room = Variable('room', '876038248', '9596660698', rating_ref)
-p1_computer = Variable('computers', '876038248', '9596660700', rating_ref)
-p1_photo = Variable('photographer', '876038248', '9596660701', rating_ref)
-p1_video = Variable('video', '876038248', '9596660702', rating_ref)
-p1_audio = Variable('audio', '876038248', '9596660703', rating_ref)
-p1_gender = Variable('gender', '876040299', ref=gender_ref)
+p1_affil = Variable('p1_affiliation', '876032204', ref=affil_ref)
+p1_market = Variable('p1_marketing', '876034750', ref=market_ref)
+p1_useful = Variable('p1_useful', '876036733', '9596648167', agree_ref)
+p1_new = Variable('p1_new_material', '876036733', '9596648168', agree_ref)
+p1_info = Variable('p1_enough_info', '876036733', '9596648169', agree_ref)
+p1_build = Variable('p1_plan_to_build', '876036733', '9596648171', agree_ref)
+p1_location = Variable('p1_location', '876038248', '9596660697', rating_ref)
+p1_room = Variable('p1_room', '876038248', '9596660698', rating_ref)
+p1_computer = Variable('p1_computers', '876038248', '9596660700', rating_ref)
+p1_photo = Variable('p1_photographer', '876038248', '9596660701', rating_ref)
+p1_video = Variable('p1_video', '876038248', '9596660702', rating_ref)
+p1_audio = Variable('p1_audio', '876038248', '9596660703', rating_ref)
+p1_gender = Variable('p1_gender', '876040299', ref=gender_ref)
 
-p2_affil = Variable('attendee affiliation', '878943755', ref=affil_ref)
-p2_market = Variable('marketing penetration', '878943756', ref=market_ref)
-p2_useful = Variable('found material useful', '878943757', '9618206443',
-                     agree_ref)
-p2_new = Variable('covered new material', '878943757', '9618206444', agree_ref)
-p2_info = Variable('has enough info to build site', '878943757', '9618206445',
-                   agree_ref)
-p2_location = Variable('location', '878943758', '9618264854', rating_ref)
-p2_room = Variable('room', '878943758', '9618264855', rating_ref)
-p2_computer = Variable('computers', '878943758', '9618264856', rating_ref)
-p2_video = Variable('video', '878943758', '9618264857', rating_ref)
-p2_audio = Variable('audio', '878943758', '9618264858', rating_ref)
-p2_usable = Variable('Weebly usability', '878943758', '9618264859', rating_ref)
-p2_flexible = Variable('Weebly flexibility', '878943758', '9618264860',
+p2_affil = Variable('p2_affiliation', '878943755', ref=affil_ref)
+p2_market = Variable('p2_marketing', '878943756', ref=market_ref)
+p2_useful = Variable('p2_useful', '878943757', '9618206443', agree_ref)
+p2_new = Variable('p2_new_material', '878943757', '9618206444', agree_ref)
+p2_info = Variable('p2_enough_info', '878943757', '9618206445', agree_ref)
+p2_location = Variable('p2_location', '878943758', '9618264854', rating_ref)
+p2_room = Variable('p2_room', '878943758', '9618264855', rating_ref)
+p2_computer = Variable('p2_computers', '878943758', '9618264856', rating_ref)
+p2_video = Variable('p2_video', '878943758', '9618264857', rating_ref)
+p2_audio = Variable('p2_audio', '878943758', '9618264858', rating_ref)
+p2_usable = Variable('p2_platform_usable', '878943758', '9618264859',
+                     rating_ref)
+p2_flexible = Variable('p2_platform_flexible', '878943758', '9618264860',
                        rating_ref)
-p2_gender = Variable('gender', '878943759', ref=gender_ref)
-p2_site = Variable('built site', '878946400', ref=site_ref)
+p2_gender = Variable('p2_gender', '878943759', ref=gender_ref)
+p2_site = Variable('p2_built_site', '878946400', ref=site_ref)
 
 varlist = [p1_affil, p1_market, p1_useful, p1_new, p1_info, p1_build, p1_room,
            p1_location, p1_computer, p1_photo, p1_video, p1_audio, p1_gender,
@@ -157,7 +155,7 @@ for survey_id in surveys:
         respondent_ids.append(s_id)
     s_responses = get_survey_data(survey_id, local_file, s_ids)
     for response in s_responses['data']:
-        print(response, '\n')
+        # print(response, '\n')
         s_data.append(response)
 
 responses = {'data': s_data}
