@@ -52,19 +52,49 @@ table(data$p1_gender)
 statements <- data[, 4:7, drop = FALSE]
 statements <- rename(statements, c(
   p1_useful = 'I found the material presented to be useful for designing an 
-  academic website.', p1_new_material = 'This workshop covered material that 
-  I did not already know.', p1_enough_info = 'I have enough information to 
-  design a professional academic website.', p1_plan_to_build = 'I plan to 
-  attend Part II to build my academic website.'))
-
+  academic website.',
+  p1_new_material = 'This workshop covered material that I did not already 
+  know.',
+  p1_enough_info = 'I have enough information to design a professional 
+  academic website.',
+  p1_plan_to_build = 'I plan to attend Part II to build my academic website.'
+))
 agreement1 <- likert(statements)
-title <- 'Part I Statement Agreement'
-agreement_plot1 <- (plot(agreement1))
-pdf("agreement1.pdf", family="CM Roman")
-agreement_plot1
-dev.off()
+p1_agreement <- (plot(agreement1, wrap=25, ordered=FALSE, 
+                      group.order=names(statements)) 
+                 + ggtitle('Please choose the extent to which you agree with 
+                           the following statements.') 
+                 + theme_fivethirtyeight()
+                 + theme(title = element_text(size=11))
+                 + theme(axis.text = element_text(size=11),
+                         axis.text.y= element_text(hjust=1, angle=0))
+                 + theme(legend.position="bottom")
+                 + theme(legend.text = element_text(size=10),
+                         legend.title = element_text(size=11)))
+ggsave(file="p1_agreement.pdf")
 
 ## Workshop Ratings ##
+ratings <- data[, 8:13, drop = FALSE]
+ratings <- rename(ratings, c(
+  p1_room = 'Comfort level of meeting room',
+  p1_location = 'Convenience of location',
+  p1_computers = 'Computer access',
+  p1_photographer = 'Photographer/headshot access',
+  p1_video = 'Video quality',
+  p1_audio = 'Audio quality'
+))
+rating1 <- likert(ratings)
+p1_rating <- (plot(rating1, wrap=20, ordered=FALSE, group.order=names(ratings)) 
+                 + ggtitle('Please provide a rating for each feature of the
+                           workshop.') 
+                 + theme_fivethirtyeight()
+                 + theme(title = element_text(size=11))
+                 + theme(axis.text = element_text(size=11),
+                         axis.text.y= element_text(hjust=1, angle=0))
+                 + theme(legend.position="bottom")
+                 + theme(legend.text = element_text(size=10),
+                         legend.title = element_text(size=11)))
+ggsave(file="p1_rating.pdf")
 
 
 ## PART 2 ##
