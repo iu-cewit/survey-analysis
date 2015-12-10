@@ -32,7 +32,7 @@ for (col in c(4:7,17:19)) {
 }
 # 5) Workshop Ratings
 for (col in c(8:13,20:24,27:28)) {
-  data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Fair',
+  data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Neutral',
                                               'Good', 'Excellent'))
 }
 # 6) Built Site
@@ -60,17 +60,16 @@ statements <- rename(statements, c(
   p1_plan_to_build = 'I plan to attend Part II to build my academic website.'
 ))
 agreement1 <- likert(statements)
-p1_agreement <- (plot(agreement1, wrap=25, ordered=FALSE, 
+p1_agreement <- (plot(agreement1, wrap=20, ordered=FALSE, 
                       group.order=names(statements)) 
-                 + ggtitle('Please choose the extent to which you agree with 
-                           the following statements.') 
-                 + theme_fivethirtyeight()
+                 + ggtitle('Please choose the extent to which you agree 
+with the following statements.') 
                  + theme(title = element_text(size=11))
-                 + theme(axis.text = element_text(size=11),
+                 + theme(axis.text = element_text(size=9),
                          axis.text.y= element_text(hjust=1, angle=0))
-                 + theme(legend.position="bottom")
-                 + theme(legend.text = element_text(size=10),
-                         legend.title = element_text(size=11)))
+                 + theme(legend.position="top")
+                 + theme(legend.text = element_text(size=9),
+                         legend.title = element_text(size=9)))
 ggsave(file="p1_agreement.pdf")
 
 ## Workshop Ratings ##
@@ -84,17 +83,16 @@ ratings <- rename(ratings, c(
   p1_audio = 'Audio quality'
 ))
 rating1 <- likert(ratings)
-p1_rating <- (plot(rating1, wrap=20, ordered=FALSE, group.order=names(ratings)) 
-                 + ggtitle('Please provide a rating for each feature of the
-                           workshop.') 
-                 + theme_fivethirtyeight()
-                 + theme(title = element_text(size=11))
-                 + theme(axis.text = element_text(size=11),
-                         axis.text.y= element_text(hjust=1, angle=0))
-                 + theme(legend.position="bottom")
-                 + theme(legend.text = element_text(size=10),
-                         legend.title = element_text(size=11)))
+p1_rating <- (plot(rating1, wrap=20, ordered=FALSE, group.order=names(ratings))
+              + ggtitle('Please provide a rating for each feature of the workshop.') 
+              + theme(title = element_text(size=11))
+              + theme(axis.text = element_text(size=9),
+                      axis.text.y= element_text(hjust=1, angle=0))
+              + theme(legend.position="top")
+              + theme(legend.text = element_text(size=9),
+                      legend.title = element_text(size=9)))
 ggsave(file="p1_rating.pdf")
+
 
 
 ## PART 2 ##
