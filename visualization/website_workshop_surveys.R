@@ -37,11 +37,6 @@ for (col in c(8:13,20:24,27:28)) {
   data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Neutral',
                                               'Good', 'Excellent'))
 }
-#for (col in c(20:24,27:28)) {
-#  # print(table(data[,col]))
-#  data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Neutral',
-#                                              'Good', 'Excellent'))
-#}
 # 6) Built Site
 data[,26] <- factor(data[,26], levels = c('Yes', 'No'))
 
@@ -68,7 +63,7 @@ statements <- rename(statements, c(
 ))
 agreement1 <- likert(statements)
 p1_agreement <- (plot(agreement1, wrap=20, ordered=FALSE, 
-                      group.order=names(statements)) 
+                      group.order=names(statements), text.size=2) 
                  + ggtitle('Please choose the extent to which you agree 
 with the following statements.') 
                  + theme(title = element_text(size=11))
@@ -90,7 +85,8 @@ ratings <- rename(ratings, c(
   p1_audio = 'Audio quality'
 ))
 rating1 <- likert(ratings)
-p1_rating <- (plot(rating1, wrap=20, ordered=FALSE, group.order=names(ratings))
+p1_rating <- (plot(rating1, wrap=20, ordered=FALSE, group.order=names(ratings),
+                   text.size=2)
               + ggtitle('Please provide a rating for each feature of the workshop.') 
               + theme(title = element_text(size=11))
               + theme(axis.text = element_text(size=9),
@@ -123,7 +119,7 @@ statements <- rename(statements, c(
 ))
 agreement2 <- likert(statements)
 p2_agreement <- (plot(agreement2, wrap=20, ordered=FALSE, 
-                      group.order=names(statements)) 
+                      group.order=names(statements), text.size=2) 
                  + ggtitle('Please choose the extent to which you agree 
 with the following statements.') 
                  + theme(title = element_text(size=11))
@@ -146,7 +142,8 @@ ratings <- rename(ratings, c(
   p2_audio = 'Audio quality'
 ))
 rating2 <- likert(ratings)
-p2_rating <- (plot(rating2, wrap=20, ordered=FALSE, group.order=names(ratings))
+p2_rating <- (plot(rating2, wrap=20, ordered=FALSE, group.order=names(ratings),
+                   text.size=2)
               + ggtitle('Please provide a rating for each feature of the workshop.') 
               + theme(title = element_text(size=11))
               + theme(axis.text = element_text(size=9),
