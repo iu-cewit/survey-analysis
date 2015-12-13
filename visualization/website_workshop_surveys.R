@@ -32,16 +32,16 @@ for (col in c(4:7,17:19)) {
                                               'Strongly Agree'))
 }
 # 5) Workshop Ratings
-for (col in c(8:13)) {
+for (col in c(8:13,20:24,27:28)) {
   print(table(data[,col]))
   data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Neutral',
                                               'Good', 'Excellent'))
 }
-for (col in c(20:24,27:28)) {
-  print(table(data[,col]))
-  data[,col] <- factor(data[,col], levels = c('Neutral',
-                                              'Good', 'Excellent'))
-}
+#for (col in c(20:24,27:28)) {
+#  # print(table(data[,col]))
+#  data[,col] <- factor(data[,col], levels = c('Very Poor', 'Poor', 'Neutral',
+#                                              'Good', 'Excellent'))
+#}
 # 6) Built Site
 data[,26] <- factor(data[,26], levels = c('Yes', 'No'))
 
