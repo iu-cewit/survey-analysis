@@ -49,7 +49,8 @@ data[,26] <- factor(data[,26], levels = c('Yes', 'No'))
 table(data$p1_affiliation)
 p1_affil <- (ggplot(data=data[which(!is.na(data$p1_affiliation)),], 
                     aes(x=p1_affiliation))
-             + layer(geom = 'bar', stat = 'bin')
+             + theme_few()
+             + geom_bar(stat = 'bin', fill = "#5AB4AC")
              + xlab('Affiliation')
              + ylab('Count')
              + ggtitle('Part I Attendee Affiliation'))
@@ -58,21 +59,23 @@ p1_affil
 ## Gender ##
 table(data$p1_gender)
 p1_sex <- (ggplot(data=data[which(!is.na(data$p1_gender)),], 
-                    aes(x=p1_gender))
-             + layer(geom = 'bar', stat = 'bin')
-             + xlab('Gender')
-             + ylab('Count')
-             + ggtitle('Part I Attendee Gender'))
+                    aes(x=p1_gender)) 
+           + theme_few()
+           + geom_bar(stat = 'bin', fill = "#5AB4AC")
+           + xlab('Gender')
+           + ylab('Count')
+           + ggtitle('Part I Attendee Gender'))
 p1_sex
 
 ## Marketing Penetration ##
 p1_market <- (ggplot(data=promo[which(!is.na(promo$p1_promotion)),], 
                   aes(x=p1_promotion))
-           + layer(geom = 'bar', stat = 'bin')
-           + xlab('Promotion Type')
-           + ylab('Count')
-           + coord_flip()
-           + ggtitle('Part I Marketing Penetration'))
+              + theme_few()
+              + geom_bar(stat = 'bin', fill = "#5AB4AC") 
+              + xlab('Promotion Type')
+              + ylab('Count')
+              + coord_flip()
+              + ggtitle('Part I Marketing Penetration'))
 p1_market
 
 
@@ -129,7 +132,8 @@ ggsave(file="p1_rating.pdf")
 table(data$p2_affiliation)
 p2_affil <- (ggplot(data=data[which(!is.na(data$p2_affiliation)),], 
                     aes(x=p2_affiliation))
-             + layer(geom = 'bar', stat = 'bin')
+             + theme_few()
+             + geom_bar(stat = 'bin', fill = "#5AB4AC")
              + xlab('Affiliation')
              + ylab('Count')
              + ggtitle('Part II Attendee Affiliation'))
@@ -140,7 +144,8 @@ p2_affil
 table(data$p2_gender)
 p2_sex <- (ggplot(data=data[which(!is.na(data$p2_gender)),], 
                   aes(x=p2_gender))
-           + layer(geom = 'bar', stat = 'bin')
+           + theme_few()
+           + + geom_bar(stat = 'bin', fill = "#5AB4AC")
            + xlab('Gender')
            + ylab('Count')
            + ggtitle('Part II Attendee Gender'))
@@ -149,7 +154,8 @@ p2_sex
 ## Marketing Penetration ##
 p2_market <- (ggplot(data=promo[which(!is.na(promo$p2_promotion)),], 
                      aes(x=p2_promotion))
-              + layer(geom = 'bar', stat = 'bin')
+              + theme_few()
+              + geom_bar(stat = 'bin', fill = "#5AB4AC")
               + xlab('Promotion Type')
               + ylab('Count')
               + coord_flip()
