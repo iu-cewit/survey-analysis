@@ -15,6 +15,7 @@ promo <- read.csv(data_file, header=TRUE)
 # convert missing to unknown values
 data[data == '[]'] <- NA
 data[data == "I Don't Know"] <- NA
+promo[promo == '[]'] <- NA
 
 # format variables to appropriate type
 # 1) affiliation
@@ -65,18 +66,14 @@ p1_sex <- (ggplot(data=data[which(!is.na(data$p1_gender)),],
 p1_sex
 
 ## Marketing Penetration ##
-# NEED TO CREATE SEPARATE DATAFRAME
-#for (row in data$p1_marketing) {
-#  
-#}
-#p1_market <- (ggplot(data=data[which(!is.na(data$p1_marketing)),], 
-#                  aes(x=p1_marketing))
-#           + layer(geom = 'bar', stat = 'bin')
-#           + xlab('Promotion Type')
-#           + ylab('Count')
-#           + coord_flip()
-#           + ggtitle('Marketing Penetration'))
-#p1_market
+p1_market <- (ggplot(data=promo[which(!is.na(promo$p1_promotion)),], 
+                  aes(x=p1_promotion))
+           + layer(geom = 'bar', stat = 'bin')
+           + xlab('Promotion Type')
+           + ylab('Count')
+           + coord_flip()
+           + ggtitle('Part I Marketing Penetration'))
+p1_market
 
 
 ## Statement Agreement ##
@@ -150,6 +147,14 @@ p2_sex <- (ggplot(data=data[which(!is.na(data$p2_gender)),],
 p2_sex
 
 ## Marketing Penetration ##
+p2_market <- (ggplot(data=promo[which(!is.na(promo$p2_promotion)),], 
+                     aes(x=p2_promotion))
+              + layer(geom = 'bar', stat = 'bin')
+              + xlab('Promotion Type')
+              + ylab('Count')
+              + coord_flip()
+              + ggtitle('Part II Marketing Penetration'))
+p2_market
 
 ## Statement Agreement ##
 statements <- data[, 17:19, drop = FALSE]
