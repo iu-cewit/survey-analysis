@@ -9,6 +9,8 @@ loadfonts()
 ## DATA ##
 data_file <- "/Users/nbrodnax/Indiana/CEWIT/evaluation/surveys/phd_website_workshop_15/data/website_workshop_data.csv"
 data <- read.csv(data_file, header=TRUE)
+data_file <- "/Users/nbrodnax/Indiana/CEWIT/evaluation/surveys/phd_website_workshop_15/data/marketing_data.csv"
+promo <- read.csv(data_file, header=TRUE)
 
 # convert missing to unknown values
 data[data == '[]'] <- NA
@@ -63,6 +65,19 @@ p1_sex <- (ggplot(data=data[which(!is.na(data$p1_gender)),],
 p1_sex
 
 ## Marketing Penetration ##
+# NEED TO CREATE SEPARATE DATAFRAME
+#for (row in data$p1_marketing) {
+#  
+#}
+#p1_market <- (ggplot(data=data[which(!is.na(data$p1_marketing)),], 
+#                  aes(x=p1_marketing))
+#           + layer(geom = 'bar', stat = 'bin')
+#           + xlab('Promotion Type')
+#           + ylab('Count')
+#           + coord_flip()
+#           + ggtitle('Marketing Penetration'))
+#p1_market
+
 
 ## Statement Agreement ##
 statements <- data[, 4:7, drop = FALSE]
