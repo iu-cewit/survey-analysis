@@ -44,9 +44,23 @@ data[,26] <- factor(data[,26], levels = c('Yes', 'No'))
 
 ## Affiliation ##
 table(data$p1_affiliation)
+p1_affil <- (ggplot(data=data[which(!is.na(data$p1_affiliation)),], 
+                    aes(x=p1_affiliation))
+             + layer(geom = 'bar', stat = 'bin')
+             + xlab('Affiliation')
+             + ylab('Count')
+             + ggtitle('Part I Attendee Affiliation'))
+p1_affil
 
 ## Gender ##
 table(data$p1_gender)
+p1_sex <- (ggplot(data=data[which(!is.na(data$p1_gender)),], 
+                    aes(x=p1_gender))
+             + layer(geom = 'bar', stat = 'bin')
+             + xlab('Gender')
+             + ylab('Count')
+             + ggtitle('Part I Attendee Gender'))
+p1_sex
 
 ## Marketing Penetration ##
 
@@ -101,9 +115,24 @@ ggsave(file="p1_rating.pdf")
 
 ## Affiliation ##
 table(data$p2_affiliation)
+p2_affil <- (ggplot(data=data[which(!is.na(data$p2_affiliation)),], 
+                    aes(x=p2_affiliation))
+             + layer(geom = 'bar', stat = 'bin')
+             + xlab('Affiliation')
+             + ylab('Count')
+             + ggtitle('Part II Attendee Affiliation'))
+p2_affil
+
 
 ## Gender ##
 table(data$p2_gender)
+p2_sex <- (ggplot(data=data[which(!is.na(data$p2_gender)),], 
+                  aes(x=p2_gender))
+           + layer(geom = 'bar', stat = 'bin')
+           + xlab('Gender')
+           + ylab('Count')
+           + ggtitle('Part II Attendee Gender'))
+p2_sex
 
 ## Marketing Penetration ##
 
